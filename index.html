@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/cc858977aa.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container unhidden">
         <div class="head">
             <div class="intro">
                 <i class="fa-solid fa-user"></i>
@@ -24,12 +24,13 @@
         <h4>Recipe of the day</h4>
         <div class="hero">
             <p id="rating"><i class="fa-solid fa-star" style="color: #ff80ff;"></i> 4.9</p>
-            <button class="like"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+            <button class="like not-liked" onclick="favoriteMeal(this)">
+                <i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
             <div class="meal-of-the-day">
                 <img src="images/noodle.jpg" alt="meal-of-the-day" width="200px">
                 <div class="food-description">
                     <p>Veg Noodles</p>
-                    <button><h5>Cook now</h5></button>
+                    <button class="cook-now" onclick="revealMenu()"><h5>Cook now</h5></button>
                 </div>
             </div>
         </div>
@@ -55,36 +56,47 @@
         <div id="random-meal">
             <div class="random-meal">
                 <img src="/images/dessert1.jpg" alt="">
-                <button class="like"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+                <button class="like not-liked" onclick="favoriteMeal(this)"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
                 <div>
-                    <p class="time">1 hr</p>
                     <p class="name">Pudding</p>
                 </div>
             </div>
             <div class="random-meal">
                 <img src="/images/dessert2.jpg" alt="">
-                <button class="like"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+                <button class="like not-liked" onclick="favoriteMeal(this)"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
                 <div>
-                    <p class="time">30 mins</p>
                     <p class="name">Cookie</p>
                 </div>
             </div>
             <div class="random-meal">
                 <img src="images/gulabJamun.jpg" alt="">
-                <button class="like"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+                <button class="like not-liked" onclick="favoriteMeal(this)"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
                 <div>
-                    <p class="time">1 hr 15 mins</p>
                     <p class="name">Gulab Jamun</p>
                 </div>
             </div>
             <div class="random-meal">
-                <button class="like"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+                <button class="like not-liked" onclick="favoriteMeal(this)"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
                 <img src="images/icecream.jpg" alt="">
                 <div>
-                    <p class="time">50 mins</p>
                     <p class="name">Vanilla Icecream</p>
                 </div>
             </div>
+        </div>
+
+    </div>
+    <div class="container recipe hidden">
+        <div class="recipe-head">
+            <button class="arrow" onclick="closeMenu()"><i class="fa-solid fa-arrow-left"></i></button>
+            <p class="food-Name">Veg Noodles</p>
+            <button class="like not-liked" onclick="favoriteMeal(this)"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+        </div>
+        <img src="images/noodle.jpg" alt="" class="recipe-img">
+        <h4>Ingredients</h4>
+        <table class="ingredients">
+        </table>
+        <h4>Preparation</h4>
+        <div class="instructions">
         </div>
 
     </div>
