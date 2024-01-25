@@ -2,7 +2,10 @@ const URL_NAME='https:www.themealdb.com/api/json/v1/1/search.php?s=';
 const URL_FIRST_LETTER="https:www.themealdb.com/api/json/v1/1/search.php?f=a";
 const URL_ID="https:www.themealdb.com/api/json/v1/1/lookup.php?i=52772";
 const URL_RANDOM="https:www.themealdb.com/api/json/v1/1/random.php";
-const URL_CATEGORY="https:www.themealdb.com/api/json/v1/1/filter.php?c=Seafood";
+const URL_CATEGORY="https:www.themealdb.com/api/json/v1/1/filter.php?c=";
+const CATEGORY="https:www.themealdb.com/api/json/v1/1/categories.php";
+
+
 
 const mealOfTheDayImg= document.querySelector('.meal-of-the-day img');
 const mealOfTheDayDescription= document.querySelector('.meal-of-the-day p');
@@ -20,28 +23,48 @@ const menu=document.querySelector('.recipe');
 const input=document.querySelector('input');
 const search=document.querySelector('.input-button button');
 const searchDiv=document.querySelector('.search');
+const categoryDiv=document.querySelector('#category-meal');
 
+const breakFast=document.querySelectorAll('.types')[0];
+const vegan=document.querySelectorAll('.types')[1];
+const dessert=document.querySelectorAll('.types')[2];
+const seafood=document.querySelectorAll('.types')[3];
 
 
 const showMenu=(foodData)=>{
+    const itemsNeeded={};
     Recipe_foodName.innerText=foodData["strMeal"];
     Recipe_img.src=foodData["strMealThumb"];
-    for(let i=0;i<20;i++){
+    let newStr;
+
+    for(let name in foodData){
+        if(name.includes("strIngredient")){
+            itemsNeeded[foodData[name]]=undefined;
+        }
+        else if(name.includes("strMeasure")){
+            newStr=name.substring(10);
+            itemsNeeded[foodData[`strIngredient${newStr}`]]=foodData[name];
+        }
+    }
+    for(let name in itemsNeeded){
         const newData1=document.createElement('td');
         const newData2=document.createElement('td');
-        if(foodData[`strMeasure${i+1}`].trim().length!=0 && foodData[`strMeasure${i+1}`].trim().length!=0 ){
+        if( itemsNeeded[name]==null || name==null){
+            continue;
+        }
+        if(name.trim().length!=0 && itemsNeeded[name].trim().length!=0){
             const newRow=document.createElement('tr');
             Recipe_table.appendChild(newRow);
-            newData1.innerHTML=foodData[`strIngredient${i+1}`];
-            newData2.innerHTML=foodData[`strMeasure${i+1}`];
+            newData1.innerHTML=name;
+            newData2.innerHTML=itemsNeeded[name];
             newRow.append(newData1);
             newRow.append(newData2);
         }
-        else if(foodData[`strMeasure${i+1}`].trim().length!=0 ){
+        else if(itemsNeeded[name].trim().length!=0 ){
             const newRow=document.createElement('tr');
             Recipe_table.appendChild(newRow);
             newData1.innerHTML="As much as you Need";
-            newData2.innerHTML=foodData[`strMeasure${i+1}`];
+            newData2.innerHTML=itemsNeeded[name];
             newRow.append(newData1);
             newRow.append(newData2);
         } 
@@ -110,6 +133,7 @@ const searchFood = async ()=>{
     
     for(let name in foodData){
         for(let food of foodData[name]){
+            // console.log(food)
 
             const foodDiv=document.createElement('div');
             foodDiv.classList.add('searched_food');
@@ -123,11 +147,7 @@ const searchFood = async ()=>{
             foodDiv.append(foodImg);
             foodDiv.append(foodName);
             searchDiv.append(foodDiv);
-            // console.log(foodData[name]);
-            // const showConsole=()=>console.log(food);
-            // foodDiv.onclick=showConsole;
             foodDiv.onclick=()=>{
-                // console.log("working")
                 showMenu(food);
                 revealMenu();
                 
@@ -138,6 +158,72 @@ const searchFood = async ()=>{
 
     }    
 }
+const searchByCategory= async (id)=>{
+    categoryDiv.innerHTML="";
+    const data = await fetch(URL_CATEGORY+id);
+    const foodData= await data.json();
+    // console.log(foodData["meals"])
+
+    for(let food of foodData["meals"]){
+        const foodDiv=document.createElement('div')
+        const foodImg=document.createElement('img');
+        const foodNameDiv=document.createElement('div');
+        const foodName=document.createElement('p');
+        
+        foodDiv.append(foodImg);
+        foodDiv.append(foodNameDiv);
+        foodNameDiv.append(foodName);
+        categoryDiv.append(foodDiv);
+        foodName.innerText=food["strMeal"];
+        foodImg.src=food["strMealThumb"];
+        
+        foodDiv.classList.add('category-meal');
+
+
+        // const likeBtn=document.createElement('button');
+        // foodDiv.append(likeBtn);
+        // likeBtn.classList.add("like","not-liked");
+        // foodName.classList.add("name");
+        // likeBtn.innerHTML=`<i class="fa-solid fa-heart" style="color: #ffffff;"></i>`
+        // likeBtn.onclick=favoriteMeal(likeBtn);
+    }
+}
+const showAllCategory=async()=>{
+    const categoryData= await fetch(CATEGORY);
+    const data= await categoryData.json();
+    // console.log(data["categories"])
+    for(let food of data["categories"]){
+        console.log(food)
+    }
+}
+const changeBtnStyle=(item)=>{
+    for(let element of document.querySelectorAll('.selected')){
+        if(item==element){
+            continue;
+        }
+        element.classList.replace("selected","not-selected")
+    }
+    item.classList.add('selected');
+}
+
+breakFast.addEventListener('click',(e)=>{
+    searchByCategory(breakFast.id);
+    changeBtnStyle(breakFast);
+})
+dessert.addEventListener('click',(e)=>{
+    searchByCategory(dessert.id);
+    changeBtnStyle(dessert);
+})
+vegan.addEventListener('click',(e)=>{
+    searchByCategory(vegan.id);
+    changeBtnStyle(vegan);
+})
+seafood.addEventListener('click',(e)=>{
+    searchByCategory(seafood.id);
+    changeBtnStyle(seafood);
+})
+
+
 cookNowBtn.addEventListener('click',()=>{revealMenu()})
 input.addEventListener('blur',()=>{ searchDiv.innerHTML="";})
 search.addEventListener('click',searchFood);
@@ -146,6 +232,13 @@ input.addEventListener('keypress',(e)=>{
         searchFood()
     }
 })
+
+const searchError=async (food)=>{
+    const data=await fetch(URL_NAME+food);
+    const foodData=await data.json();
+    console.log(foodData["meals"]);
+}
+// searchError("Spaghetti Bolognese");
 
 mealOfTheDay(showMenu);
 favoriteMeal();
