@@ -1,6 +1,6 @@
 const URL_NAME='https:www.themealdb.com/api/json/v1/1/search.php?s=';
 const URL_FIRST_LETTER="https:www.themealdb.com/api/json/v1/1/search.php?f=a";
-const URL_ID="https:www.themealdb.com/api/json/v1/1/lookup.php?i=52772";
+const URL_ID="https:www.themealdb.com/api/json/v1/1/lookup.php?i=";
 const URL_RANDOM="https:www.themealdb.com/api/json/v1/1/random.php";
 const URL_CATEGORY="https:www.themealdb.com/api/json/v1/1/filter.php?c=";
 const CATEGORY="https:www.themealdb.com/api/json/v1/1/categories.php";
@@ -32,6 +32,7 @@ const seafood=document.querySelectorAll('.types')[3];
 
 
 const showMenu=(foodData)=>{
+    // console.log(foodData)
     const itemsNeeded={};
     Recipe_foodName.innerText=foodData["strMeal"];
     Recipe_img.src=foodData["strMealThumb"];
@@ -70,6 +71,7 @@ const showMenu=(foodData)=>{
         } 
     }
     let instructions=foodData["strInstructions"].split(".");
+    // console.log(instructions)
     let steps=1;
     for(let procedure of instructions){
         if(procedure.trim().length!=0){
@@ -158,12 +160,15 @@ const searchFood = async ()=>{
 
     }    
 }
-const searchByCategory= async (id)=>{
+const searchId=async (id)=>{
+    const data=await fetch(URL_ID+id);
+    const foodData=await data.json();
+    showMenu(foodData["meals"][0]);
+}
+const searchByCategory = async (id)=>{
     categoryDiv.innerHTML="";
     const data = await fetch(URL_CATEGORY+id);
     const foodData= await data.json();
-    // console.log(foodData["meals"])
-
     for(let food of foodData["meals"]){
         const foodDiv=document.createElement('div')
         const foodImg=document.createElement('img');
@@ -176,10 +181,14 @@ const searchByCategory= async (id)=>{
         categoryDiv.append(foodDiv);
         foodName.innerText=food["strMeal"];
         foodImg.src=food["strMealThumb"];
-        
         foodDiv.classList.add('category-meal');
-
-
+        foodDiv.onclick=()=>{
+            searchId(food["idMeal"]);
+            
+            // showMenu(food);
+            revealMenu();
+            
+        }
         // const likeBtn=document.createElement('button');
         // foodDiv.append(likeBtn);
         // likeBtn.classList.add("like","not-liked");
@@ -206,6 +215,7 @@ const changeBtnStyle=(item)=>{
     item.classList.add('selected');
 }
 
+searchByCategory(dessert.id);
 breakFast.addEventListener('click',(e)=>{
     searchByCategory(breakFast.id);
     changeBtnStyle(breakFast);
@@ -233,11 +243,7 @@ input.addEventListener('keypress',(e)=>{
     }
 })
 
-const searchError=async (food)=>{
-    const data=await fetch(URL_NAME+food);
-    const foodData=await data.json();
-    console.log(foodData["meals"]);
-}
+
 // searchError("Spaghetti Bolognese");
 
 mealOfTheDay(showMenu);
