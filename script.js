@@ -97,7 +97,7 @@ const mealOfTheDay=async(callback)=>{
     callback(foodData);
 }
 const favoriteMeal=(element)=>{
-    
+    // console.log(element)
     if(element.classList.contains("not-liked")){
         element.innerHTML=`<i class="fa-solid fa-heart" style="color: #ff80c0;"></i>`;
         element.style.backgroundColor="white";
@@ -189,18 +189,11 @@ const searchByCategory = async (id)=>{
             revealMenu();
             
         }
-        // const likeBtn=document.createElement('button');
-        // foodDiv.append(likeBtn);
-        // likeBtn.classList.add("like","not-liked");
-        // foodName.classList.add("name");
-        // likeBtn.innerHTML=`<i class="fa-solid fa-heart" style="color: #ffffff;"></i>`
-        // likeBtn.onclick=favoriteMeal(likeBtn);
     }
 }
 const showAllCategory=async()=>{
     const categoryData= await fetch(CATEGORY);
     const data= await categoryData.json();
-    // console.log(data["categories"])
     for(let food of data["categories"]){
         console.log(food)
     }
@@ -214,8 +207,6 @@ const changeBtnStyle=(item)=>{
     }
     item.classList.add('selected');
 }
-
-searchByCategory(dessert.id);
 breakFast.addEventListener('click',(e)=>{
     searchByCategory(breakFast.id);
     changeBtnStyle(breakFast);
